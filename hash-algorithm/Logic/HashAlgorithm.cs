@@ -10,6 +10,8 @@ namespace hash_algorithm.Logic
     {
         public string ToHash(string inputString)
         {
+            if (inputString == string.Empty || inputString == (string)null) return "00000000";
+
             HashAlgorithm hashAlgorithm = new HashAlgorithm();
             UInt64 sum = 0;
 
