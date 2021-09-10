@@ -9,9 +9,10 @@ namespace hash_algorithm
         {
             HashAlgorithm hashAlgorithm = new HashAlgorithm();
 
-            string input = "aaaaaaabbbbbbbbbbfffffffffffewh";
-            Console.WriteLine("Input string is {0}", input);
-            Console.WriteLine("Output string is {0}", hashAlgorithm.ToHash(input));
+            Console.WriteLine(hashAlgorithm.ToHash("bbaa"));
+            Console.WriteLine(hashAlgorithm.ToHash("baab"));
+            Console.WriteLine(hashAlgorithm.ToHash("aabb"));
+            Console.WriteLine(hashAlgorithm.ToHash("baba"));
         }
     }
 }
