@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/hash-algorithm/obj/Release/netcoreapp3.1
+/hash-algorithm/obj/Debug/netcoreapp3.1
+/hash-algorithm/obj
+/hash-algorithm/bin/Debug/netcoreapp3.1
