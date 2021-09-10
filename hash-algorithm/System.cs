@@ -8,11 +8,10 @@ namespace hash_algorithm
         static void Main(string[] args)
         {
             HashAlgorithm hashAlgorithm = new HashAlgorithm();
-            string test = "testing";
 
-            Console.WriteLine("Input string is {0}", test);
-
-            Console.WriteLine("Output string is {0}", hashAlgorithm.ToHash(test));
+            string input = "aaaaaaabbbbbbbbbbfffffffffffewh";
+            Console.WriteLine("Input string is {0}", input);
+            Console.WriteLine("Output string is {0}", hashAlgorithm.ToHash(input));
         }
     }
 }
