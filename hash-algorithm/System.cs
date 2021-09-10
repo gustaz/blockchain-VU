@@ -9,10 +9,11 @@ namespace hash_algorithm
         {
             HashAlgorithm hashAlgorithm = new HashAlgorithm();
 
-            Console.WriteLine(hashAlgorithm.ToHash("bbaa"));
-            Console.WriteLine(hashAlgorithm.ToHash("baab"));
-            Console.WriteLine(hashAlgorithm.ToHash("aabb"));
-            Console.WriteLine(hashAlgorithm.ToHash("baba"));
+            Console.WriteLine("Ivestis: {0} ir gauta isvestis: {1}", "input", hashAlgorithm.ToHash("input"));
+            Console.WriteLine("Ivestis: {0} ir gauta isvestis: {1}", "jnput", hashAlgorithm.ToHash("jnput"));
+            Console.WriteLine("Ivestis: {0} ir gauta isvestis: {1}", "lietuva", hashAlgorithm.ToHash("lietuva"));
+            Console.WriteLine("Ivestis: {0} ir gauta isvestis: {1}", "Lietuva", hashAlgorithm.ToHash("Lietuva"));
+            Console.WriteLine("Ivestis: {0} ir gauta isvestis: {1}", "Lietuva!", hashAlgorithm.ToHash("Lietuva!"));
         }
     }
 }

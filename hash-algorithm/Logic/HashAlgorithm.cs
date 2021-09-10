@@ -17,11 +17,11 @@ namespace hash_algorithm.Logic
             foreach (char character in inputString)
             {
                 UInt64 inputValue = Convert.ToUInt32(character);
-                inputValue = BitOperations.RotateRight(inputValue, 51197 * Convert.ToInt32(character));
-                inputValue = inputValue ^ character;
-                //Console.WriteLine(inputValue);
+                inputValue = BitOperations.RotateRight(inputValue, 81943 * Convert.ToInt32(character));
+                inputValue = inputValue ^ character ^ current;
 
-                sum += inputValue - BitOperations.RotateLeft((UInt64)current, 51287 * Convert.ToInt32(character));
+                sum += inputValue - BitOperations.RotateLeft((UInt64)current, 82031 * Convert.ToInt32(character));
+                sum = BitOperations.RotateRight(sum, 82031 * Convert.ToInt32(current));
                 current = character;
             }
 
@@ -35,8 +35,8 @@ namespace hash_algorithm.Logic
                 int salt = 0;
 
                 if (formattedSum.Length > i)
-                    salt = formattedSum[i] + i * 3;
-                else salt = formattedSum[i % formattedSum.Length] + i * 7;
+                    salt = formattedSum[i] + i * 81943;
+                else salt = formattedSum[i % formattedSum.Length] + i * 82031;
 
                 if (salt >= charList.Length)
                     salt = salt % charList.Length;
