@@ -19,35 +19,36 @@ namespace hash_algorithm.Input
 
         public List<string> GenerateData()
         {
-            List<string> stringCouples = new List<string>();
+            List<string> stringCouples;
 
             Console.WriteLine("Generating data ...");
 
             stringCouples = _dataGenerator.RunStringGenerator();
 
-            if (!Directory.Exists(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\"))
+            if (!Directory.Exists(@"InputFiles\"))
             {
-                Directory.CreateDirectory(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\");
+                Directory.CreateDirectory(@"InputFiles\");
             }
 
-            File.WriteAllLines(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\stringpairs.txt", stringCouples);
+            File.WriteAllLines(@"InputFiles\stringpairs.txt", stringCouples);
 
-            File.WriteAllText(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\1symbol1.txt", _dataGenerator.RunCharGenerator(1));
+            File.WriteAllText(@"InputFiles\1symbol1.txt", _dataGenerator.RunCharGenerator(1));
 
-            File.WriteAllText(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\1symbol2.txt", _dataGenerator.RunCharGenerator(1));
+            File.WriteAllText(@"InputFiles\1symbol2.txt", _dataGenerator.RunCharGenerator(1));
 
-            File.WriteAllText(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\symbols1.txt", _dataGenerator.RunCharGenerator(10000));
+            File.WriteAllText(@"InputFiles\symbols1.txt", _dataGenerator.RunCharGenerator(10000));
 
-            File.WriteAllText(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\symbols2.txt", _dataGenerator.RunCharGenerator(10000));
+            File.WriteAllText(@"InputFiles\symbols2.txt", _dataGenerator.RunCharGenerator(10000));
 
             string symbols = _dataGenerator.RunCharGenerator(10000);
             string symbolsTemp = symbols;
 
-            symbolsTemp.Insert(symbolsTemp.Length / 2, "e");
-            File.WriteAllText(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\symbolsmiddleE.txt", symbolsTemp);
 
-            symbols.Insert(symbols.Length / 2, "a");
-            File.WriteAllText(@"C:\Users\gusta\Desktop\VU ISI 1\2 kursas\Blockchain\blockchain-VU\hash-algorithm\InputFiles\symbolsmiddleA.txt", symbols);
+            symbolsTemp = symbolsTemp.Insert(symbolsTemp.Length / 2, "e");
+            File.WriteAllText(@"InputFiles\symbolsmiddleE.txt", symbolsTemp);
+
+            symbols = symbols.Insert(symbols.Length / 2, "a");
+            File.WriteAllText(@"InputFiles\symbolsmiddleA.txt", symbols);
 
             Console.WriteLine("All data generated and written!");
 

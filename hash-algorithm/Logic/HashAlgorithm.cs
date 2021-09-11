@@ -11,8 +11,6 @@ namespace hash_algorithm.Logic
         public string ToHash(string inputString)
         {
             if (inputString == string.Empty || inputString == (string)null) return "00000000";
-
-            HashAlgorithm hashAlgorithm = new HashAlgorithm();
             UInt64 sum = 0;
 
             char current = inputString[0];
@@ -28,13 +26,13 @@ namespace hash_algorithm.Logic
             }
 
             char[] formattedSum = sum.ToString().ToCharArray();
-            char[] charList = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+            char[] charList = "123456789ABCDEF".ToCharArray();
 
             string hash = string.Empty;
 
             for(int i = 0; i < 64; i++)
             {
-                int salt = 0;
+                int salt;
 
                 if (formattedSum.Length > i)
                     salt = formattedSum[i] + i * 81943;

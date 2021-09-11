@@ -39,7 +39,7 @@ namespace hash_algorithm.InputGeneration
             return result;
         }
 
-        private string RandomString(int length)
+        static string RandomString(int length)
         {
             const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             StringBuilder result = new StringBuilder();
