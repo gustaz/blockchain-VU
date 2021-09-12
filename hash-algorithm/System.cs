@@ -19,6 +19,7 @@ namespace hash_algorithm
             List<string> arguments = args.ToList();
             string inputParam = string.Empty;
             string outputParam = string.Empty;
+            string hashParam = string.Empty;
             Stopwatch stopWatch = new Stopwatch();
             TimeSpan timeSpan = new TimeSpan();
 
@@ -29,6 +30,14 @@ namespace hash_algorithm
                 
                 if (inputParam != "-c" && inputParam != "-g" && inputParam != "-a")
                 {
+                    outputParam = arguments.Last();
+                    arguments.Remove(outputParam);
+                }
+
+                if (outputParam == "-md5" || outputParam == "-sha256")
+                {
+                    hashParam = outputParam;
+                    arguments.Remove(outputParam);
                     outputParam = arguments.Last();
                     arguments.Remove(outputParam);
                 }
@@ -78,7 +87,21 @@ namespace hash_algorithm
 
                     if(str1 != str2)
                     {
-                        avalanchePairs.Add(new Tuple<string, string>(hashAlgorithm.ToHash(str1), hashAlgorithm.ToHash(str2)));
+                        if(hashParam == string.Empty)
+                        {
+                            avalanchePairs.Add(new Tuple<string, string>(hashAlgorithm.ToHash(str1), hashAlgorithm.ToHash(str2)));
+                        }
+                        else
+                        {
+                            if(hashParam == "-md5")
+                            {
+                                avalanchePairs.Add(new Tuple<string, string>(hashAlgorithm.ToDefinedHash(MD5.Create(), str1), hashAlgorithm.ToDefinedHash(MD5.Create(), str2)));
+                            }
+                            else if(hashParam == "-sha256")
+                            {
+                                avalanchePairs.Add(new Tuple<string, string>(hashAlgorithm.ToDefinedHash(SHA256.Create(), str1), hashAlgorithm.ToDefinedHash(MD5.Create(), str2)));
+                            }
+                        }
                     }
                 });
 
@@ -121,8 +144,7 @@ namespace hash_algorithm
                       )
                     );
 
-                    Tuple<string, string> binaryPairs = new Tuple<string, string>(binarystring1, binarystring2);
-                    similarityPercentage.Add(similarityCalculator.CalculateSimilarity(binaryPairs.Item1, binaryPairs.Item2));
+                    similarityPercentage.Add(similarityCalculator.CalculateSimilarity(binarystring1, binarystring2));
                 }
 
                 min = 100;
@@ -161,7 +183,21 @@ namespace hash_algorithm
                 {
                     if (occurence.Length == prev.Length)
                     {
-                        if (hashAlgorithm.ToHash(occurence) == hashAlgorithm.ToHash(prev))
+                        if (hashParam == "-md5")
+                        {
+                            MD5 md5Hash = MD5.Create();
+
+                            if(hashAlgorithm.ToDefinedHash(md5Hash, occurence) == hashAlgorithm.ToDefinedHash(md5Hash, prev))
+                                collided = true;
+                        }
+                        if (hashParam == "-sha256")
+                        {
+                            SHA256 sha256Hash = SHA256.Create();
+
+                            if (hashAlgorithm.ToDefinedHash(sha256Hash, occurence) == hashAlgorithm.ToDefinedHash(sha256Hash, prev))
+                                collided = true;
+                        }
+                        else if (hashAlgorithm.ToHash(occurence) == hashAlgorithm.ToHash(prev))
                             collided = true;
                     }
                     //Console.WriteLine("Comparing {0} and {1}", hashAlgorithm.ToHash(occurence), hashAlgorithm.ToHash(prev));
@@ -178,7 +214,22 @@ namespace hash_algorithm
             else if (inputParam == "-i")
             {
                 stopWatch.Start();
-                arguments.ForEach(x => { hashes.Add(new Tuple<string, string>(x, hashAlgorithm.ToHash(x))); });
+
+                if (hashParam == "-md5")
+                {
+                    MD5 md5Hasher = MD5.Create();
+                    arguments.ForEach(x => { hashes.Add(new Tuple<string, string>(x, hashAlgorithm.ToDefinedHash(md5Hasher, x))); });
+                }
+                else if (hashParam == "-sha256")
+                {
+                    SHA256 sha256Hasher = SHA256.Create();
+                    arguments.ForEach(x => { hashes.Add(new Tuple<string, string>(x, hashAlgorithm.ToDefinedHash(sha256Hasher, x))); });
+                } 
+                else
+                {
+                    arguments.ForEach(x => { hashes.Add(new Tuple<string, string>(x, hashAlgorithm.ToHash(x))); });
+                }
+
                 timeSpan = stopWatch.Elapsed;
             }
             else if (inputParam == "-if")
@@ -189,8 +240,23 @@ namespace hash_algorithm
                     try
                     {
                         string data = File.ReadAllText(argument);
-                        hashes.Add(new Tuple<string, string>(argument, hashAlgorithm.ToHash(data)));
+                        
+                        if (hashParam == "-md5")
+                        {
+                            MD5 md5Hasher = MD5.Create();
+                            hashes.Add(new Tuple<string, string>(argument, hashAlgorithm.ToDefinedHash(md5Hasher, data)));
+                        }
+                        else if(hashParam == "-sha256")
+                        {
+                            SHA256 sha256Hasher = SHA256.Create();
+                            hashes.Add(new Tuple<string, string>(argument, hashAlgorithm.ToDefinedHash(sha256Hasher, data)));
+                        }
+                        else
+                        {
+                            hashes.Add(new Tuple<string, string>(argument, hashAlgorithm.ToHash(data)));
+                        }  
                     }
+
                     catch(FileNotFoundException)
                     {
                         Console.WriteLine("File not found! Exiting..");

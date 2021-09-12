@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace hash_algorithm.Logic
@@ -44,6 +45,18 @@ namespace hash_algorithm.Logic
                 hash += charList[salt];
             }
             return hash;
+        }
+        public string ToDefinedHash(HashAlgorithm definedHash, string input)
+        {
+            byte[] bytes = definedHash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+
+            return builder.ToString();
         }
     }
 }
