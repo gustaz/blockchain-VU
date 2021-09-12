@@ -6,22 +6,22 @@ using System.Text;
 
 namespace hash_algorithm.Logic
 {
-    public class HashAlgorithm
+    public class CustomHashAlgorithm
     {
         public string ToHash(string inputString)
         {
-            if (inputString == string.Empty || inputString == (string)null) return "00000000";
+            //if (inputString == string.Empty || inputString == (string)null) return "00000000";
             UInt64 sum = 0;
 
             char current = inputString[0];
             foreach (char character in inputString)
             {
                 UInt64 inputValue = Convert.ToUInt32(character);
-                inputValue = BitOperations.RotateRight(inputValue, 81943 * Convert.ToInt32(character));
+                inputValue = BitOperations.RotateRight(inputValue, 4001027 * Convert.ToInt32(character));
                 inputValue = inputValue ^ character ^ current;
 
-                sum += inputValue - BitOperations.RotateLeft((UInt64)current, 82031 * Convert.ToInt32(character));
-                sum = BitOperations.RotateRight(sum, 82031 * Convert.ToInt32(current));
+                sum += inputValue - BitOperations.RotateLeft((UInt64)current, 3012719 * Convert.ToInt32(character));
+                sum = BitOperations.RotateRight(sum, 1013699 * Convert.ToInt32(current));
                 current = character;
             }
 
@@ -35,8 +35,8 @@ namespace hash_algorithm.Logic
                 int salt;
 
                 if (formattedSum.Length > i)
-                    salt = formattedSum[i] + i * 81943;
-                else salt = formattedSum[i % formattedSum.Length] + i * 82031;
+                    salt = formattedSum[i] + i * 4001027;
+                else salt = formattedSum[i % formattedSum.Length] + i * 3012719;
 
                 if (salt >= charList.Length)
                     salt = salt % charList.Length;

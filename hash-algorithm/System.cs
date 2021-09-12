@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 using hash_algorithm.Input;
 using hash_algorithm.InputGeneration;
 using hash_algorithm.Logic;
@@ -28,12 +29,11 @@ namespace hash_algorithm
                 
                 if (inputParam != "-c" && inputParam != "-g" && inputParam != "-a")
                 {
-                
                     outputParam = arguments.Last();
                     arguments.Remove(outputParam);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("\nNo valid launch parameters detected!\nValid arguments are:\n");
                 Console.WriteLine("-a Used to benchmark the Avalanche effect");
@@ -48,7 +48,7 @@ namespace hash_algorithm
             List<Tuple<string, string>> hashes = new List<Tuple<string, string>>();
             List<string> stringCouples = new List<string>();
 
-            HashAlgorithm hashAlgorithm = new HashAlgorithm();
+            CustomHashAlgorithm hashAlgorithm = new CustomHashAlgorithm();
             DataGenerator dataGenerator = new DataGenerator();
             FileService fileService = new FileService(dataGenerator);
 
@@ -64,10 +64,11 @@ namespace hash_algorithm
 
                 Console.WriteLine("Performing data generation...");
 
-                Parallel.For(0, 10000, x =>
+                Parallel.For(0, 100000, x =>
                 {
-                    StringBuilder s1 = new StringBuilder(dataGenerator.RunCharGenerator(1000));
-                    StringBuilder s2 = new StringBuilder(dataGenerator.RunCharGenerator(1000));
+                    string input = dataGenerator.RunCharGenerator(1000);
+                    StringBuilder s1 = new StringBuilder(input);
+                    StringBuilder s2 = new StringBuilder(input);
 
                     s1.Insert(x % 1000, dataGenerator.RunCharGenerator(1));
                     s2.Insert(x % 1000, dataGenerator.RunCharGenerator(1));
@@ -75,11 +76,13 @@ namespace hash_algorithm
                     string str1 = s1.ToString();
                     string str2 = s2.ToString();
 
-                    avalanchePairs.Add(new Tuple<string, string>(hashAlgorithm.ToHash(str1), hashAlgorithm.ToHash(str2)));
+                    if(str1 != str2)
+                    {
+                        avalanchePairs.Add(new Tuple<string, string>(hashAlgorithm.ToHash(str1), hashAlgorithm.ToHash(str2)));
+                    }
                 });
 
                 Console.WriteLine("Data generation done!");
-                //Parallel.ForEach(avalanchePairs, x => { similarityPercentage.Add(similarityCalculator.CalculateSimilarity(x.Item1, x.Item2)); });
 
                 Console.WriteLine("\nPerforming similarity calculation in HEX...");
                 foreach(Tuple<string, string> pair in avalanchePairs)
@@ -87,10 +90,56 @@ namespace hash_algorithm
                     similarityPercentage.Add(similarityCalculator.CalculateSimilarity(pair.Item1, pair.Item2));
                 }
 
-                int i = 0;
-                Parallel.ForEach(similarityPercentage, x => { if (x < min) min = x; if (x > max) max = x; avg += x; i++; });
+                //Parallel.ForEach(similarityPercentage, x => { if (x < min) min = x; if (x > max) max = x; avg += x; });
 
-                Console.WriteLine("Minimum detected hex difference: {0}\nMaximum detected difference: {1}\nAverage difference: {2}", min, max, avg / i);
+                foreach(var occ in similarityPercentage)
+                {
+                    if (occ < min)
+                        min = occ;
+                    if (occ > max)
+                        max = occ;
+
+                    avg += occ;
+                }
+
+                Console.WriteLine("Minimum detected hex difference: {0:F2}%\nMaximum detected difference: {1:F2}%\nAverage difference: {2:F2}%", min, max, avg / similarityPercentage.Count());
+
+                similarityPercentage.Clear();
+
+                Console.WriteLine("\nPerforming similarity calculation in BINARY...");
+                foreach (Tuple<string, string> pair in avalanchePairs)
+                {
+                    string binarystring1 = String.Join(String.Empty,
+                      pair.Item1.Select(
+                        c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')
+                      )
+                    );
+
+                    string binarystring2 = String.Join(String.Empty,
+                      pair.Item2.Select(
+                        c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')
+                      )
+                    );
+
+                    Tuple<string, string> binaryPairs = new Tuple<string, string>(binarystring1, binarystring2);
+                    similarityPercentage.Add(similarityCalculator.CalculateSimilarity(binaryPairs.Item1, binaryPairs.Item2));
+                }
+
+                min = 100;
+                max = 0;
+                avg = 0;
+
+                foreach (var occ in similarityPercentage)
+                {
+                    if (occ < min)
+                        min = occ;
+                    if (occ > max)
+                        max = occ;
+
+                    avg += occ;
+                }
+
+                Console.WriteLine("Minimum detected binary difference: {0:F2}%\nMaximum detected difference: {1:F2}%\nAverage difference: {2:F2}%", min, max, avg / similarityPercentage.Count());
             }
             else if (inputParam == "-c")
             {
@@ -98,18 +147,16 @@ namespace hash_algorithm
                 {
                     stringCouples = File.ReadAllLines(@"InputFiles\stringpairs.txt").ToList();
                 }
-                catch (Exception ex)
+                catch (FileNotFoundException)
                 {
-                    if (ex is FileNotFoundException)
-                    {
-                        Console.WriteLine("File not found! Generating data instead..");
-                        stringCouples = fileService.GenerateData();
-                    }
+                    Console.WriteLine("File not found! Generating data instead..");
+                    stringCouples = fileService.GenerateData();
                 }
                 string prev = stringCouples.First();
                 bool collided = false;
                 stringCouples.Remove(prev);
 
+                Console.WriteLine("Performing collission test...");
                 foreach (string occurence in stringCouples)
                 {
                     if (occurence.Length == prev.Length)
@@ -117,7 +164,7 @@ namespace hash_algorithm
                         if (hashAlgorithm.ToHash(occurence) == hashAlgorithm.ToHash(prev))
                             collided = true;
                     }
-                    Console.WriteLine("Comparing {0} and {1}", hashAlgorithm.ToHash(occurence), hashAlgorithm.ToHash(prev));
+                    //Console.WriteLine("Comparing {0} and {1}", hashAlgorithm.ToHash(occurence), hashAlgorithm.ToHash(prev));
                     prev = occurence;
                 }
 
@@ -139,8 +186,16 @@ namespace hash_algorithm
                 stopWatch.Start();
                 foreach (string argument in arguments)
                 {
-                    string data = File.ReadAllText(argument);
-                    hashes.Add(new Tuple<string, string>(argument, hashAlgorithm.ToHash(data)));
+                    try
+                    {
+                        string data = File.ReadAllText(argument);
+                        hashes.Add(new Tuple<string, string>(argument, hashAlgorithm.ToHash(data)));
+                    }
+                    catch(FileNotFoundException)
+                    {
+                        Console.WriteLine("File not found! Exiting..");
+                        Environment.Exit(1);
+                    }
                 }
                 timeSpan = stopWatch.Elapsed;
             }
@@ -173,7 +228,9 @@ namespace hash_algorithm
                     {
                         File.Delete(@"Output.txt");
                     }
+
                     hashes.ForEach(x => { File.AppendAllText(@"OutputFiles\Output.txt", String.Format("Input: {0} and the resulting output: {1}\n", x.Item1, x.Item2)); });
+
                     Console.WriteLine("Time spent hashing: {0}ms", timeSpan.TotalMilliseconds);
                     Console.WriteLine("Done!");
                 }
@@ -189,51 +246,46 @@ namespace hash_algorithm
 
     class Levenshtein
     {
-        public int LevenshteinDistance(string source, string target)
+        public int LevenshteinDistance(string a, string b)
         {
-            if ((source == null) || (target == null)) return 0;
-            if ((source.Length == 0) || (target.Length == 0)) return 0;
-            if (source == target) return source.Length;
-
-            int sourceWordCount = source.Length;
-            int targetWordCount = target.Length;
-
-            // Step 1
-            if (sourceWordCount == 0)
-                return targetWordCount;
-
-            if (targetWordCount == 0)
-                return sourceWordCount;
-
-            int[,] distance = new int[sourceWordCount + 1, targetWordCount + 1];
-
-            // Step 2
-            for (int i = 0; i <= sourceWordCount; distance[i, 0] = i++) ;
-            for (int j = 0; j <= targetWordCount; distance[0, j] = j++) ;
-
-            for (int i = 1; i <= sourceWordCount; i++)
+            if (String.IsNullOrEmpty(a) && String.IsNullOrEmpty(b))
             {
-                for (int j = 1; j <= targetWordCount; j++)
-                {
-                    // Step 3
-                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
-
-                    // Step 4
-                    distance[i, j] = Math.Min(Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1), distance[i - 1, j - 1] + cost);
-                }
+                return 0;
             }
+            if (String.IsNullOrEmpty(a))
+            {
+                return b.Length;
+            }
+            if (String.IsNullOrEmpty(b))
+            {
+                return a.Length;
+            }
+            int lengthA = a.Length;
+            int lengthB = b.Length;
+            var distances = new int[lengthA + 1, lengthB + 1];
+            for (int i = 0; i <= lengthA; distances[i, 0] = i++) ;
+            for (int j = 0; j <= lengthB; distances[0, j] = j++) ;
 
-            return distance[sourceWordCount, targetWordCount];
+            for (int i = 1; i <= lengthA; i++)
+                for (int j = 1; j <= lengthB; j++)
+                {
+                    int cost = b[j - 1] == a[i - 1] ? 0 : 1;
+                    distances[i, j] = Math.Min
+                        (
+                        Math.Min(distances[i - 1, j] + 1, distances[i, j - 1] + 1),
+                        distances[i - 1, j - 1] + cost
+                        );
+                }
+            return distances[lengthA, lengthB];
         }
 
         public double CalculateSimilarity(string source, string target)
         {
             if ((source == null) || (target == null)) return 0.0;
             if ((source.Length == 0) || (target.Length == 0)) return 0.0;
-            if (source == target) return 1.0;
-
+            if (source == target) return 100.0;
             int stepsToSame = LevenshteinDistance(source, target);
-            return (1.0 - ((double)stepsToSame / (double)Math.Max(source.Length, target.Length)));
+            return 100 - ((double)Math.Max(source.Length, target.Length) - (double)stepsToSame) / (double)Math.Max(source.Length, target.Length) * 100;
         }
     }
 }
