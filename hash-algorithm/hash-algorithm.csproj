@@ -6,4 +6,10 @@
     <RootNamespace>hash_algorithm</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="InputFiles\**" />
+    <EmbeddedResource Remove="InputFiles\**" />
+    <None Remove="InputFiles\**" />
+  </ItemGroup>
+
 </Project>

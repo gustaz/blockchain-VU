@@ -11,8 +11,13 @@ namespace hash_algorithm.Logic
     {
         public string ToHash(string inputString)
         {
-            //if (inputString == string.Empty || inputString == (string)null) return "00000000";
             UInt64 sum = 0;
+
+            if (inputString == string.Empty || inputString == (string)null)
+            {
+                inputString = "eezgIENWG";
+                sum = 895423;
+            }
 
             char current = inputString[0];
             foreach (char character in inputString)

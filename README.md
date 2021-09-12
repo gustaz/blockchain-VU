@@ -26,3 +26,43 @@ A for loop is utilized to create the 256-bit hash. A „salt“ is formed for ea
 2. If it is, our salt is obtained by taking the current character at the remainder, obtained by dividing the index in process by our converted character array's size, plus value of the index times a large prime number which is not the same as the one used in path 1.
 
 If our salt is larger than the length of our converted character array's size, the remainder obtained by dividing the salt from our converted character array is taken. Finally, the obtained number, the „salt“, is used as an index to pick a value from our previously defined char list and the obtained value is appended to the hash. Once this process is repeated a total of 64 times, our desired 256-bit hashed string is returned.
+
+## Upsides and downsides
+
+### The upsides
+
+1. The algorithm always generates a 256-bit string. 
+2. One input always produces identical output.
+3. The algorithm is avalanche-effect based (80% average difference), jumbling bits around heavily, meaning similar strings give completely different hashes.
+4. It is comparatively fast, relying on bitwise operations and simple index assignments to generate a hex code for the hash.
+
+### The downsides
+
+1. Even if the algorithm is avalanche-effect based, some outputs have been spotted that are up to 90% similar, although such occurences are rare.
+
+
+## Testing
+
+### Deterministic
+
+The algorithm was checked thoroughly whether it is deterministic. One input always gives the same output, thus the requirement is satisfied.
+
+### Defined range
+
+No outputs have currently been found that produce a hash that is longer than 256-bits. This should, also, be impossible in practice, due to how the algorithm forms strings.
+
+### Avalanche-effect based
+
+The code itself has a test to check the percentage difference of a huge input of randomly generated pairs of strings. The only difference between the two strings is one single character. The average difference during most tests thus far has been around 65-85%, with occasional extremums. This, in my opinion, more than satisfies my initial goal of 75%.
+
+### Fast
+
+I added the ability to benchmark the hashing algorithm. By hashing "konstitucija.txt" repeatedly, I noticed that the average time to hash it is around 5 - 6.5 ms. This, compared to MD5's 8.5 - 10.5 ms and SHA256's 8 - 10 ms is a great performance indication.
+
+### Uniform
+
+The hash should, ideally, use as much of its 64-bit unsigned dataspace, as lots of bit rotations and bitwise operations are performed that should, in theory, spread it uniformly throughout the range.
+
+### Collission-resistant
+
+As was mentioned in the uniformity test, bit rotations and other bitwise operations are performed, which jumble and spread the potential range out. This lowers the risk of two inputs having the same output drastically.

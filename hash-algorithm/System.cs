@@ -174,6 +174,7 @@ namespace hash_algorithm
                     Console.WriteLine("File not found! Generating data instead..");
                     stringCouples = fileService.GenerateData();
                 }
+
                 string prev = stringCouples.First();
                 bool collided = false;
                 stringCouples.Remove(prev);

@@ -13,7 +13,7 @@ namespace hash_algorithm.InputGeneration
         {
             List<string> PairsOfStrings = new List<string>();
 
-            Parallel.For(0, 25000,
+            Parallel.For(0, 100000,
                 action => {
                     PairsOfStrings
                         .Add(RandomString(10));
