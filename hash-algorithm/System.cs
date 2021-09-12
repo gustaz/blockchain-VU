@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using hash_algorithm.Input;
 using hash_algorithm.InputGeneration;
 using hash_algorithm.Logic;
+using System.Collections;
 
 namespace hash_algorithm
 {
@@ -22,6 +23,18 @@ namespace hash_algorithm
             string hashParam = string.Empty;
             Stopwatch stopWatch = new Stopwatch();
             TimeSpan timeSpan = new TimeSpan();
+
+            /*            Action usageWarning = new Action(x =>
+                            {
+                            Console.WriteLine("Usage: hash-algorithm <-i | -if> <input> <-o | -of> [-md5 | -sha256]");
+                            Console.WriteLine("-i allows input through the command line.");
+                            Console.WriteLine("-if allows input through a file.");
+                            Console.WriteLine("input requires string(s) to be input if the -i flag is selected and path(s) if the -if flag is selected.");
+                            Console.WriteLine("-o outputs to the command line.");
+                            Console.WriteLine("-of outputs to a file.");
+                            Console.WriteLine("-md5 runs the program using MD5 instead of the built-in hashing algorithm.");
+                            Console.WriteLine("-sha256 runs the program using SHA256 instead of the built-in hashing algorithm.");
+                        });*/
 
             try
             {
@@ -44,14 +57,7 @@ namespace hash_algorithm
             }
             catch (Exception)
             {
-                Console.WriteLine("\nNo valid launch parameters detected!\nValid arguments are:\n");
-                Console.WriteLine("-a Used to benchmark the Avalanche effect");
-                Console.WriteLine("-c Used to check for collissions");
-                Console.WriteLine("-g Used to trigger file generation");
-                Console.WriteLine("-i Used to take input from the command line");
-                Console.WriteLine("-if Used to take input from a file");
-                Console.WriteLine("-o Used to output to the command line");
-                Console.WriteLine("-of Used to output to a file");
+
             }
 
             List<Tuple<string, string>> hashes = new List<Tuple<string, string>>();
@@ -127,38 +133,32 @@ namespace hash_algorithm
 
                 Console.WriteLine("Minimum detected hex difference: {0:F2}%\nMaximum detected difference: {1:F2}%\nAverage difference: {2:F2}%", min, max, avg / similarityPercentage.Count());
 
-                similarityPercentage.Clear();
-
-                Console.WriteLine("\nPerforming similarity calculation in BINARY...");
-                foreach (Tuple<string, string> pair in avalanchePairs)
-                {
-                    string binarystring1 = String.Join(String.Empty,
-                      pair.Item1.Select(
-                        c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')
-                      )
-                    );
-
-                    string binarystring2 = String.Join(String.Empty,
-                      pair.Item2.Select(
-                        c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')
-                      )
-                    );
-
-                    similarityPercentage.Add(similarityCalculator.CalculateSimilarity(binarystring1, binarystring2));
-                }
-
                 min = 100;
                 max = 0;
                 avg = 0;
-
-                foreach (var occ in similarityPercentage)
+                    
+                Console.WriteLine("\nPerforming similarity calculation in BINARY...");
+                foreach (Tuple<string, string> pair in avalanchePairs)
                 {
-                    if (occ < min)
-                        min = occ;
-                    if (occ > max)
-                        max = occ;
 
-                    avg += occ;
+                    BitArray bitArray1 = new BitArray(Encoding.UTF8.GetBytes(pair.Item1));
+                    BitArray bitArray2 = new BitArray(Encoding.UTF8.GetBytes(pair.Item2));
+
+                    bitArray1.Xor(bitArray2);
+
+                    double bits = 0;
+                    foreach (bool bit in bitArray1)
+                        if (bit) bits++;
+
+                    double difference = 100 * (bits / 512);
+
+                    if (difference < min)
+                        min = difference;
+
+                    if (difference > max)
+                        max = difference;
+
+                    avg += difference;
                 }
 
                 Console.WriteLine("Minimum detected binary difference: {0:F2}%\nMaximum detected difference: {1:F2}%\nAverage difference: {2:F2}%", min, max, avg / similarityPercentage.Count());
@@ -268,12 +268,7 @@ namespace hash_algorithm
             }
             else if (arguments.Count != 0)
             {
-                Console.WriteLine("\nNo valid launch input parameters detected!\nValid arguments are:\n");
-                Console.WriteLine("-a Used to benchmark the Avalanche effect");
-                Console.WriteLine("-c Used to check for collissions");
-                Console.WriteLine("-g Used to trigger file generation");
-                Console.WriteLine("-i Used to take input from the command line");
-                Console.WriteLine("-if Used to take input from a file");
+                Console.WriteLine("Usage: hash-algorithm.exe <-i | -if> <input> <-o | -of> [-md5 | -sha256]");
             }
 
             if(hashes.Count != 0)
@@ -303,9 +298,7 @@ namespace hash_algorithm
                 }
                 else
                 {
-                    Console.WriteLine("\nNo valid launch output parameters detected!\nValid arguments are:\n");
-                    Console.WriteLine("-o Used to output to the command line");
-                    Console.WriteLine("-of Used to take input from the command line");
+                    Console.WriteLine("Usage: hash-algorithm.exe <-i | -if> <input> <-o | -of> [-md5 | -sha256]");
                 }
             }
         }
