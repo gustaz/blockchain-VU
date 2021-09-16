@@ -10,7 +10,7 @@ A hashing algorithm designed to emulate all basic requirements of a good hashing
 
 The program takes command line argument input. The possibilities are several.
 
-Usage: hash-generator.exe <-i | -if> <input> <-o | -of> [-md5 | -sha256]
+Usage: `.\hash-generator <-i | -if> <input> <-o | -of> [-md5 | -sha256]`
 
 -i allows input through the command line.
 -if allows input through a file.
