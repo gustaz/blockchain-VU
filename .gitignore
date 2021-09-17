@@ -11,3 +11,6 @@
 /hash-algorithm/bin/Debug/net5.0
 /hash-algorithm/OutputFiles
 /hash-algorithm/bin/Release/net5.0
+/build
+/hash-algorithm/Properties/PublishProfiles
+/hash-algorithm/hash-algorithm.csproj.user

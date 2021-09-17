@@ -32,7 +32,7 @@ namespace hash_algorithm.Logic
             }
 
             char[] formattedSum = sum.ToString().ToCharArray();
-            char[] charList = "123456789ABCDEF".ToCharArray();
+            char[] charList = "0123456789ABCDEF".ToCharArray();
 
             string hash = string.Empty;
 
@@ -47,7 +47,9 @@ namespace hash_algorithm.Logic
                 if (salt >= charList.Length)
                     salt = salt % charList.Length;
 
-                hash += charList[salt];
+                if (i != 0)
+                    hash += charList[salt];
+                else hash += charList[1];
             }
             return hash;
         }

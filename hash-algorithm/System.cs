@@ -155,7 +155,7 @@ namespace hash_algorithm
             {
                 try
                 {
-                    stringCouples = File.ReadAllLines(@"InputFiles\stringpairs.txt").ToList();
+                    stringCouples = File.ReadAllLines(AppContext.BaseDirectory + @"InputFiles\stringpairs.txt").ToList();
                 }
                 catch (FileNotFoundException)
                 {
@@ -219,17 +219,16 @@ namespace hash_algorithm
                     arguments.ForEach(x => { hashes.Add(new Tuple<string, string>(x, hashAlgorithm.ToHash(x))); });
                 }
 
-                timeSpan = stopWatch.Elapsed;
+                timeSpan += stopWatch.Elapsed;
             }
             else if (inputParam == "-if")
             {
-                stopWatch.Start();
                 foreach (string argument in arguments)
                 {
                     try
                     {
                         string data = File.ReadAllText(argument);
-                        
+                        stopWatch.Start();
                         if (hashParam == "-md5")
                         {
                             MD5 md5Hasher = MD5.Create();
@@ -245,14 +244,13 @@ namespace hash_algorithm
                             hashes.Add(new Tuple<string, string>(argument, hashAlgorithm.ToHash(data)));
                         }  
                     }
-
                     catch(FileNotFoundException)
                     {
                         Console.WriteLine("File not found! Exiting..");
                         Environment.Exit(1);
                     }
+                    timeSpan += stopWatch.Elapsed;
                 }
-                timeSpan = stopWatch.Elapsed;
             }
             else if (arguments.Count != 0)
             {
@@ -269,17 +267,17 @@ namespace hash_algorithm
                 else if(outputParam == "-of")
                 {
                     Console.WriteLine("Writing to files...");
-                    if (!Directory.Exists(@"OutputFiles\"))
+                    if (!Directory.Exists(AppContext.BaseDirectory + @"OutputFiles\"))
                     {
-                        Directory.CreateDirectory(@"OutputFiles\");
+                        Directory.CreateDirectory(AppContext.BaseDirectory + @"OutputFiles\");
                     }
 
-                    if (File.Exists(@"OutputFiles\Output.txt"))
+                    if (File.Exists(AppContext.BaseDirectory + @"OutputFiles\Output.txt"))
                     {
-                        File.Delete(@"Output.txt");
+                        File.Delete(AppContext.BaseDirectory + @"Output.txt");
                     }
 
-                    hashes.ForEach(x => { File.AppendAllText(@"OutputFiles\Output.txt", String.Format("Input: {0} and the resulting output: {1}\n", x.Item1, x.Item2)); });
+                    hashes.ForEach(x => { File.AppendAllText(AppContext.BaseDirectory + @"OutputFiles\Output.txt", String.Format("Input: {0} and the resulting output: {1}\n", x.Item1, x.Item2)); });
 
                     Console.WriteLine("Time spent hashing: {0}ms", timeSpan.TotalMilliseconds);
                     Console.WriteLine("Done!");
