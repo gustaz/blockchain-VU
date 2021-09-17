@@ -16,7 +16,7 @@ Usage: `.\hash-generator <-i | -if | -c | -g | -a> <input> <-o | -of> [-md5 | -s
 
 -if allows input through a file.
 
--c allows collission resistance testing.
+-c allows collision resistance testing.
 
 -g allows for generation of files.
 
@@ -38,7 +38,7 @@ input requires string(s) to be input if the -i flag is selected and path(s) if t
 
 ### String to mutated unsigned integer conversion
 
-The hashing function works by taking all characters of a string one by one and converting them to their unsigned integer UTF-8 representation. Bitwise operations are then performed in the order of rightwise and leftwise rotations and XOR. The current character that is being operated on is also affected by the character before it (in case of it being the first character in a given string, it is simply operated on by itself), leading to a more consistent implementation of the *Avalanche effect*. All bitwise rotations are done with multiples of a prime number in order to increase the security of the hash and ensure less collissions. All the characters of the string are then obtained as mutated unsigned integers and added together as a sum.
+The hashing function works by taking all characters of a string one by one and converting them to their unsigned integer UTF-8 representation. Bitwise operations are then performed in the order of right-wise and left-wise rotations and XOR. The current character that is being operated on is also affected by the character before it (in case of it being the first character in a given string, it is simply operated on by itself), leading to a more consistent implementation of the *Avalanche effect*. All bitwise rotations are done with multiples of a prime number in order to increase the security of the hash and ensure less collisions. All the characters of the string are then obtained as mutated unsigned integers and added together as a sum.
 
 ### Mutated unsigned integer to character representation logic
 
@@ -63,7 +63,7 @@ If our salt is larger than the length of our converted character array's size, t
 
 ### The downsides
 
-1. Even if the algorithm is avalanche-effect based, some outputs have been spotted that are up to 90% similar, although such occurences are rare.
+1. Even if the algorithm is avalanche-effect based, some outputs have been spotted that are up to 90% similar, although such occurrences are rare.
 2. Larger files make the algorithm slow down exponentially.
 
 ## Testing
@@ -88,6 +88,6 @@ I added the ability to benchmark the hashing algorithm. By hashing "konstitucija
 
 The hash should, ideally, use as much of its 64-bit unsigned dataspace, as lots of bit rotations and bitwise operations are performed that should, in theory, spread it uniformly throughout the range.
 
-### Collission-resistant
+### Collision-resistant
 
 As was mentioned in the uniformity test, bit rotations and other bitwise operations are performed, which jumble and spread the potential range out. This lowers the risk of two inputs having the same output drastically.
