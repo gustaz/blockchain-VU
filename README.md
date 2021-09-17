@@ -10,10 +10,13 @@ A hashing algorithm designed to emulate all basic requirements of a good hashing
 
 The program takes command line argument input. The possibilities are several.
 
-Usage: `.\hash-generator <-i | -if> <input> <-o | -of> [-md5 | -sha256]`
+Usage: `.\hash-generator <-i | -if | -c | -g | -a> <input> <-o | -of> [-md5 | -sha256]`
 
 -i allows input through the command line.
 -if allows input through a file.
+-c allows collission resistance testing.
+-g allows for generation of files.
+-a allows for Avalanche-effect testing.
 input requires string(s) to be input if the -i flag is selected and path(s) if the -if flag is selected.
 -o outputs to the command line.
 -of outputs to a file.
@@ -51,7 +54,6 @@ If our salt is larger than the length of our converted character array's size, t
 
 1. Even if the algorithm is avalanche-effect based, some outputs have been spotted that are up to 90% similar, although such occurences are rare.
 2. Larger files make the algorithm slow down exponentially.
-
 
 ## Testing
 

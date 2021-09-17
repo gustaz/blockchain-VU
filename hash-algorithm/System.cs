@@ -24,18 +24,6 @@ namespace hash_algorithm
             Stopwatch stopWatch = new Stopwatch();
             TimeSpan timeSpan = new TimeSpan();
 
-            /*            Action usageWarning = new Action(x =>
-                            {
-                            Console.WriteLine("Usage: hash-algorithm <-i | -if> <input> <-o | -of> [-md5 | -sha256]");
-                            Console.WriteLine("-i allows input through the command line.");
-                            Console.WriteLine("-if allows input through a file.");
-                            Console.WriteLine("input requires string(s) to be input if the -i flag is selected and path(s) if the -if flag is selected.");
-                            Console.WriteLine("-o outputs to the command line.");
-                            Console.WriteLine("-of outputs to a file.");
-                            Console.WriteLine("-md5 runs the program using MD5 instead of the built-in hashing algorithm.");
-                            Console.WriteLine("-sha256 runs the program using SHA256 instead of the built-in hashing algorithm.");
-                        });*/
-
             try
             {
                 inputParam = arguments[0];
@@ -57,7 +45,7 @@ namespace hash_algorithm
             }
             catch (Exception)
             {
-
+                PrintUsageWarning();
             }
 
             List<Tuple<string, string>> hashes = new List<Tuple<string, string>>();
@@ -268,7 +256,7 @@ namespace hash_algorithm
             }
             else if (arguments.Count != 0)
             {
-                Console.WriteLine("Usage: hash-algorithm.exe <-i | -if> <input> <-o | -of> [-md5 | -sha256]");
+                PrintUsageWarning();
             }
 
             if(hashes.Count != 0)
@@ -298,9 +286,23 @@ namespace hash_algorithm
                 }
                 else
                 {
-                    Console.WriteLine("Usage: hash-algorithm.exe <-i | -if> <input> <-o | -of> [-md5 | -sha256]");
+                    PrintUsageWarning();
                 }
             }
+        }
+        private static void PrintUsageWarning()
+        {
+            Console.WriteLine("Usage: .\\hash-algorithm <-i | -if | -c | -g | -a> <input> <-o | -of> [-md5 | -sha256]");
+            Console.WriteLine("-i allows input through the command line.");
+            Console.WriteLine("-if allows input through a file.");
+            Console.WriteLine("-c allows collission resistance testing.");
+            Console.WriteLine("-g allows for generation of files.");
+            Console.WriteLine("-a allows for Avalanche-effect testing.");
+            Console.WriteLine("input requires string(s) to be input if the -i flag is selected and path(s) if the -if flag is selected.");
+            Console.WriteLine("-o outputs to the command line.");
+            Console.WriteLine("-of outputs to a file.");
+            Console.WriteLine("-md5 runs the program using MD5 instead of the built-in hashing algorithm.");
+            Console.WriteLine("-sha256 runs the program using SHA256 instead of the built-in hashing algorithm.");
         }
     }
 
