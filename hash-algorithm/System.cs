@@ -293,7 +293,7 @@ namespace hash_algorithm
             Console.WriteLine("Usage: .\\hash-algorithm <-i | -if | -c | -g | -a> <input> <-o | -of> [-md5 | -sha256]");
             Console.WriteLine("-i allows input through the command line.");
             Console.WriteLine("-if allows input through a file.");
-            Console.WriteLine("-c allows collission resistance testing.");
+            Console.WriteLine("-c allows collision resistance testing.");
             Console.WriteLine("-g allows for generation of files.");
             Console.WriteLine("-a allows for Avalanche-effect testing.");
             Console.WriteLine("input requires string(s) to be input if the -i flag is selected and path(s) if the -if flag is selected.");
