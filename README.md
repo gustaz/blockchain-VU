@@ -50,7 +50,7 @@ If our salt is larger than the length of our converted character array's size, t
 ### The downsides
 
 1. Even if the algorithm is avalanche-effect based, some outputs have been spotted that are up to 90% similar, although such occurences are rare.
-2. Larger files make the algorithm slow down exponentially faster by comparison to SHA-256 and MD-5.
+2. Larger files make the algorithm slow down exponentially.
 
 
 ## Testing
@@ -67,7 +67,7 @@ No outputs have currently been found that produce a hash that is longer than 256
 
 The code itself has a test to check the percentage difference of a huge input of randomly generated pairs of strings. The only difference between the two strings is one single character. The average difference during most tests thus far has been around 65-85%, with occasional extremums. This, in my opinion, more than satisfies my initial goal of 75%.
 
-### Fast for small files, slow for larger files
+### Fast for small files, adequate for larger files
 
 I added the ability to benchmark the hashing algorithm. By hashing "konstitucija.txt" repeatedly, I noticed that the average time to hash it is around 5 - 6.5 ms. This, compared to MD5's 8.5 - 10.5 ms and SHA256's 8 - 10 ms is a great performance indication. Meanwhile, hashing larger files takes a bit longer, but no loss of data occurs and the same output is always obtained.
 
