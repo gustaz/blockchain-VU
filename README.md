@@ -13,14 +13,25 @@ The program takes command line argument input. The possibilities are several.
 Usage: `.\hash-generator <-i | -if | -c | -g | -a> <input> <-o | -of> [-md5 | -sha256]`
 
 -i allows input through the command line.
+
 -if allows input through a file.
+
 -c allows collission resistance testing.
+
 -g allows for generation of files.
+
 -a allows for Avalanche-effect testing.
+
+if -c, -g or -a are selected as options, no further arguments are required.
+
 input requires string(s) to be input if the -i flag is selected and path(s) if the -if flag is selected.
+
 -o outputs to the command line.
+
 -of outputs to a file.
+
 -md5 runs the program using MD5 instead of the built-in hashing algorithm.
+
 -sha256 runs the program using SHA256 instead of the built-in hashing algorithm.
 
 ## How it works
